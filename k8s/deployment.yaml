@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: backend
+  template:
+    metadata:
+      labels:
+        component: backend
+    spec:
+      containers:
+        - name: backend-api
+          image: jek2141/apartments_api:v4
+          ports:
+          - containerPort: 5000
+          env:
+          - name: DATABASE_URL
+            valueFrom: 
+              configMapKeyRef:
+                name: database-config
+                key: postgres_db_url
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-credentials
+                key: postgres_password
